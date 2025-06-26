@@ -1,5 +1,5 @@
 import os, json, cv2, numpy as np, base64
-from inference_sdk import InferenceHTTPClient
+import requests
 from dotenv import load_dotenv
 from typing import Optional
 
@@ -32,10 +32,16 @@ def process_image(image_path: str, total_weight: float = 100, material_type: str
     if not workflow_id:
         raise ValueError(f"No workflow ID configured for material type: {material_type}")
     
-    client = InferenceHTTPClient(api_url=SERVERLESS_URL, api_key=API_KEY)
-    result = client.run_workflow(WORKSPACE, workflow_id, images={"image": image_path}, use_cache=False)
-    result = result[0]
-    
+    url = f"{SERVERLESS_URL}/{WORKSPACE}/{workflow_id}"
+    with open(image_path, "rb") as image_file:
+        response = requests.post(
+            url,
+            files={"image": image_file},
+            params={"api_key": API_KEY, "use_cache": "false"}
+        )
+    response.raise_for_status()
+    result = response.json()
+
     image = cv2.imread(image_path)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
