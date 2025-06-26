@@ -3,5 +3,6 @@ uvicorn[standard]
 requests
 python-multipart
 python-dotenv
-inference-sdk
 roboflow
+pillow
+aiofiles      
