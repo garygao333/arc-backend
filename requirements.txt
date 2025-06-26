@@ -5,4 +5,5 @@ python-multipart
 python-dotenv
 roboflow
 pillow
+inference-sdk
 aiofiles      
